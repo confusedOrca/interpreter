@@ -1,8 +1,10 @@
 package lexer
 
-import "github.com/confusedOrca/interpreter/token"
+import (
+	"github.com/confusedOrca/interpreter/token"
+)
 
-func New(input string) *Lexer {
+func NewLexer(input string) *Lexer {
 	l := &Lexer{
 		input: input,
 	}
@@ -11,7 +13,11 @@ func New(input string) *Lexer {
 	return l
 }
 
-func newToken(tokenType token.TokenType, ch byte) token.Token {
+type TokenLiteral interface {
+	~byte | ~string
+}
+
+func newToken[T TokenLiteral](tokenType token.TokenType, ch T) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
 }
 

@@ -12,7 +12,7 @@ type Lexer struct {
 }
 
 func (l *Lexer) NextToken() token.Token {
-	var tok token.Token
+	var tkn token.Token
 
 	l.skipWhitespace()
 
@@ -22,98 +22,65 @@ func (l *Lexer) NextToken() token.Token {
 		if l.peekChar() == '=' {
 			ch := l.ch
 			l.readChar()
-			tok.Type, tok.Literal = token.EQ, string(ch)+string(l.ch)
+			tkn = newToken(token.EQ, string(ch)+string(l.ch))
 		} else {
-			tok = newToken(token.ASSIGN, l.ch)
+			tkn = newToken(token.ASSIGN, l.ch)
 		}
 
 	case '+':
-		tok = newToken(token.PLUS, l.ch)
+		tkn = newToken(token.PLUS, l.ch)
 	case '-':
-		tok = newToken(token.MINUS, l.ch)
+		tkn = newToken(token.MINUS, l.ch)
 
 	case '!':
 		if l.peekChar() == '=' {
 			ch := l.ch
 			l.readChar()
-			tok.Type, tok.Literal = token.NOT_EQ, string(ch)+string(l.ch)
+			tkn = newToken(token.NOT_EQ, string(ch)+string(l.ch))
 		} else {
-			tok = newToken(token.BANG, l.ch)
+			tkn = newToken(token.BANG, l.ch)
 		}
 
 	case '/':
-		tok = newToken(token.SLASH, l.ch)
+		tkn = newToken(token.SLASH, l.ch)
 	case '*':
-		tok = newToken(token.ASTERISK, l.ch)
+		tkn = newToken(token.ASTERISK, l.ch)
 	case '<':
-		tok = newToken(token.LT, l.ch)
+		tkn = newToken(token.LT, l.ch)
 	case '>':
-		tok = newToken(token.GT, l.ch)
+		tkn = newToken(token.GT, l.ch)
 	case ';':
-		tok = newToken(token.SEMICOLON, l.ch)
+		tkn = newToken(token.SEMICOLON, l.ch)
 	case '(':
-		tok = newToken(token.LPAREN, l.ch)
+		tkn = newToken(token.LPAREN, l.ch)
 	case ')':
-		tok = newToken(token.RPAREN, l.ch)
+		tkn = newToken(token.RPAREN, l.ch)
 	case ',':
-		tok = newToken(token.COMMA, l.ch)
+		tkn = newToken(token.COMMA, l.ch)
 	case '{':
-		tok = newToken(token.LBRACE, l.ch)
+		tkn = newToken(token.LBRACE, l.ch)
 	case '}':
-		tok = newToken(token.RBRACE, l.ch)
+		tkn = newToken(token.RBRACE, l.ch)
 	case 0:
-		tok.Literal = ""
-		tok.Type = token.EOF
+		tkn.Literal = ""
+		tkn.Type = token.EOF
 
 	default:
 		if isLetter(l.ch) {
-			tok.Literal = l.readBlock(isLetter)
-			tok.Type = token.LookupIdent(tok.Literal)
-			return tok
+			tkn.Literal = l.readBlock(isLetter)
+			tkn.Type = token.LookupIdent(tkn.Literal)
+			return tkn
 		}
 
 		if isDigit(l.ch) {
-			tok.Type = token.INT
-			tok.Literal = l.readBlock(isDigit)
-			return tok
+			tkn.Type = token.INT
+			tkn.Literal = l.readBlock(isDigit)
+			return tkn
 		}
 
-		tok = newToken(token.ILLEGAL, l.ch)
+		tkn = newToken(token.ILLEGAL, l.ch)
 	}
 
 	l.readChar()
-	return tok
-}
-
-func (l *Lexer) readChar() {
-	if l.readPosition >= len(l.input) {
-		l.ch = 0
-	} else {
-		l.ch = l.input[l.readPosition]
-	}
-
-	l.position = l.readPosition
-	l.readPosition += 1
-}
-
-func (l *Lexer) readBlock(isValid func(byte) bool) string {
-	position := l.position
-	for isValid(l.ch) {
-		l.readChar()
-	}
-	return l.input[position:l.position]
-}
-
-func (l *Lexer) skipWhitespace() {
-	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
-		l.readChar()
-	}
-}
-
-func (l *Lexer) peekChar() byte {
-	if l.readPosition >= len(l.input) {
-		return 0
-	} else {
-		return l.input[l.readPosition]
-	}
+	return tkn
 }
