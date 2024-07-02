@@ -1,6 +1,8 @@
 package ast
 
-import "github.com/confusedOrca/interpreter/token"
+import (
+	"github.com/confusedOrca/interpreter/token"
+)
 
 type LetStatement struct {
 	Token token.Token

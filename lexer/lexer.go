@@ -90,38 +90,3 @@ func (lxr *Lexer) NextToken() token.Token {
 	lxr.readChar()
 	return tkn
 }
-
-func (lxr *Lexer) readChar() {
-	if lxr.readPosition >= len(lxr.input) {
-		lxr.char = NULLCHAR
-	} else {
-		lxr.char = lxr.input[lxr.readPosition]
-	}
-
-	lxr.position = lxr.readPosition
-	lxr.readPosition += 1
-}
-
-func (lxr *Lexer) readBlock(isValid func(byte) bool) string {
-	startPosition := lxr.position
-
-	for isValid(lxr.char) {
-		lxr.readChar()
-	}
-
-	return lxr.input[startPosition:lxr.position]
-}
-
-func (lxr *Lexer) skipWhitespace() {
-	for isWhiteSpace(lxr.char) {
-		lxr.readChar()
-	}
-}
-
-func (lxr *Lexer) peekChar() byte {
-	if lxr.readPosition >= len(lxr.input) {
-		return NULLCHAR
-	} else {
-		return lxr.input[lxr.readPosition]
-	}
-}
