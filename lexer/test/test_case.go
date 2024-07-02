@@ -2,7 +2,7 @@ package lexer
 
 import "github.com/confusedOrca/interpreter/token"
 
-var input_case = `let five = 5;
+var test_input = `let five = 5;
 				let ten = 10;
 				let add = fn(x, y) {
 				x + y;
@@ -18,9 +18,9 @@ var input_case = `let five = 5;
 				10 == 10;
 				10 != 9;`
 
-var test_case = []struct {
-	expectedType    token.TokenType
-	expectedLiteral string
+var expectedTkns = []struct {
+	Type    token.TokenType
+	Literal string
 }{
 	{token.LET, "let"},
 	{token.IDENT, "five"},
