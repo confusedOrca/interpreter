@@ -4,14 +4,7 @@ import (
 	"github.com/confusedOrca/interpreter/token"
 )
 
-func NewLexer(input string) *Lexer {
-	l := &Lexer{
-		input: input,
-	}
-
-	l.readChar()
-	return l
-}
+const NULLCHAR = 0
 
 type TokenLiteral interface {
 	~byte | ~string
@@ -27,4 +20,8 @@ func isLetter(ch byte) bool {
 
 func isDigit(ch byte) bool {
 	return '0' <= ch && ch <= '9'
+}
+
+func isWhiteSpace(ch byte) bool {
+	return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r'
 }
