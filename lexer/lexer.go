@@ -17,23 +17,25 @@ func New(input string) *Lexer {
 	return newLxr
 }
 
+// ------------------------
+// Lexer Public Method
+// ------------------------
+
 func (lxr *Lexer) NextToken() token.Token {
 	lxr.skipWhitespace()
 	var tkn token.Token
 
 	switch lxr.char {
-	case '=':
+	case '=', '!':
 		if lxr.peekChar() == '=' {
+			if lxr.char == '=' {
+				tkn = newToken(token.EQ, "==")
+			} else {
+				tkn = newToken(token.NOT_EQ, "!=")
+			}
 			lxr.readChar()
-			tkn = newToken(token.EQ, "==")
-		} else {
+		} else if lxr.char == '=' {
 			tkn = newToken(token.ASSIGN, "=")
-		}
-
-	case '!':
-		if lxr.peekChar() == '=' {
-			lxr.readChar()
-			tkn = newToken(token.NOT_EQ, "!=")
 		} else {
 			tkn = newToken(token.BANG, "!")
 		}
@@ -65,6 +67,10 @@ func (lxr *Lexer) NextToken() token.Token {
 	return tkn
 }
 
+// ------------------------
+// Lexer Private Methods
+// ------------------------
+
 func (lxr *Lexer) readChar() {
 	if lxr.readPosition >= len(lxr.input) {
 		lxr.char = NULLCHAR
@@ -74,6 +80,14 @@ func (lxr *Lexer) readChar() {
 
 	lxr.position = lxr.readPosition
 	lxr.readPosition += 1
+}
+
+func (lxr *Lexer) peekChar() byte {
+	if lxr.readPosition >= len(lxr.input) {
+		return NULLCHAR
+	}
+
+	return lxr.input[lxr.readPosition]
 }
 
 func (lxr *Lexer) readBlock(isValid func(byte) bool) string {
@@ -90,12 +104,4 @@ func (lxr *Lexer) skipWhitespace() {
 	for isWhiteSpace(lxr.char) {
 		lxr.readChar()
 	}
-}
-
-func (lxr *Lexer) peekChar() byte {
-	if lxr.readPosition >= len(lxr.input) {
-		return NULLCHAR
-	}
-
-	return lxr.input[lxr.readPosition]
 }

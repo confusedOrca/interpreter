@@ -22,10 +22,10 @@ const (
 	CALL
 )
 
-func (parser *Parser) parseExpression(precedence int) ast.Expression {
-	prefix := parser.prefixParseFns[parser.curToken.Type]
+func (p *Parser) parseExpression(precedence int) ast.Expression {
+	prefix := p.prefixParseFns[p.curToken.Type]
 	if prefix == nil {
-		parser.noPrefixParseFnError(parser.curToken.Type)
+		p.noPrefixParseFnError(p.curToken.Type)
 		return nil
 	}
 
@@ -33,7 +33,7 @@ func (parser *Parser) parseExpression(precedence int) ast.Expression {
 	return leftExp
 }
 
-func (parser *Parser) noPrefixParseFnError(t token.TokenType) {
+func (p *Parser) noPrefixParseFnError(t token.TokenType) {
 	msg := fmt.Sprintf("no prefix parse function for %s found", t)
-	parser.errors = append(parser.errors, msg)
+	p.errors = append(p.errors, msg)
 }

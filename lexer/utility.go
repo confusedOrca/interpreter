@@ -7,18 +7,9 @@ import (
 const NULLCHAR = 0
 
 var charToTokenType = map[byte]token.TokenType{
-	'+': token.PLUS,
-	'-': token.MINUS,
-	'/': token.SLASH,
-	'*': token.ASTERISK,
-	'<': token.LT,
-	'>': token.GT,
-	';': token.SEMICOLON,
-	'(': token.LPAREN,
-	')': token.RPAREN,
-	',': token.COMMA,
-	'{': token.LBRACE,
-	'}': token.RBRACE,
+	'+': token.PLUS, '-': token.MINUS, '/': token.SLASH, '*': token.ASTERISK,
+	'<': token.LT, '>': token.GT, ';': token.SEMICOLON, ',': token.COMMA,
+	'(': token.LPAREN, ')': token.RPAREN, '{': token.LBRACE, '}': token.RBRACE,
 }
 
 type TokenLiteral interface {
