@@ -15,7 +15,7 @@ func (parser *Parser) parseStatement() ast.Statement {
 		return parser.parseReturnStatement()
 
 	default:
-		return nil
+		return parser.parseExpressionStatement()
 	}
 }
 
@@ -45,6 +45,19 @@ func (parser *Parser) parseReturnStatement() *ast.ReturnStatement {
 	parser.nextToken()
 
 	for !parser.curTokenIs(token.SEMICOLON) {
+		parser.nextToken()
+	}
+
+	return stmt
+}
+
+func (parser *Parser) parseExpressionStatement() *ast.ExpressionStatement {
+	stmt := &ast.ExpressionStatement{
+		Token:      parser.curToken,
+		Expression: parser.parseExpression(LOWEST),
+	}
+
+	if parser.peekTokenIs(token.SEMICOLON) {
 		parser.nextToken()
 	}
 
