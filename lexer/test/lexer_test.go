@@ -13,11 +13,12 @@ func TestNextToken(t *testing.T) {
 		tkn := lxr.NextToken()
 
 		if tkn.Type != expTkn.Type {
-			t.Fatalf("tests[%d] - tokentype wrong. expected=%q, got=%q",
+			t.Fatalf("[%d] wrong tkntype. expected=%q, got=%q",
 				i, expTkn.Type, tkn.Type)
 		}
+
 		if tkn.Literal != expTkn.Literal {
-			t.Fatalf("tests[%d] - literal wrong. expected=%q, got=%q",
+			t.Fatalf("[%d] wrong literal. expected=%q, got=%q",
 				i, expTkn.Literal, tkn.Literal)
 		}
 	}
