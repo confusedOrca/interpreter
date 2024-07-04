@@ -11,10 +11,14 @@ func TestString(t *testing.T) {
 	tkn := token.Token{Type: token.LET, Literal: "let"}
 
 	ident := &ast.Identifier{
-		Token: token.Token{Type: token.IDENT, Literal: "myVar"}, Value: "myVar"}
+		Token: token.Token{Type: token.IDENT, Literal: "myVar"},
+		Value: "myVar",
+	}
 
 	value := &ast.Identifier{
-		Token: token.Token{Type: token.IDENT, Literal: "anotherVar"}, Value: "anotherVar"}
+		Token: token.Token{Type: token.IDENT, Literal: "anotherVar"},
+		Value: "anotherVar",
+	}
 
 	ls := &ast.LetStatement{Token: tkn, Ident: ident, Value: value}
 

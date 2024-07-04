@@ -8,11 +8,6 @@ import (
 	"github.com/confusedOrca/interpreter/token"
 )
 
-type (
-	prefixParseFn func() ast.Expression
-	infixParseFn  func(ast.Expression) ast.Expression
-)
-
 type Parser struct {
 	lexer          *lexer.Lexer
 	curToken       token.Token
@@ -27,12 +22,18 @@ func New(lxr *lexer.Lexer) *Parser {
 		lexer:          lxr,
 		errors:         []string{},
 		prefixParseFns: make(map[token.TokenType]prefixParseFn),
+		infixParseFns:  make(map[token.TokenType]infixParseFn),
 	}
 
 	newParser.registerPrefix(token.IDENT, newParser.parseIdentifier)
 	newParser.registerPrefix(token.INT, newParser.parseIntegerLiteral)
+
 	newParser.registerPrefix(token.BANG, newParser.parsePrefixExpression)
 	newParser.registerPrefix(token.MINUS, newParser.parsePrefixExpression)
+
+	for tokenType := range precedences {
+		newParser.registerInfix(tokenType, newParser.parseInfixExpression)
+	}
 
 	newParser.nextToken()
 	newParser.nextToken()
@@ -65,6 +66,20 @@ func (parser *Parser) Errors() []string {
 // -------------------------------
 // Parser Private Utility Methods
 // -------------------------------
+
+func (p *Parser) peekPrecedence() int {
+	if precedence, ok := precedences[p.peekToken.Type]; ok {
+		return precedence
+	}
+	return LOWEST
+}
+
+func (p *Parser) curPrecedence() int {
+	if precedence, ok := precedences[p.curToken.Type]; ok {
+		return precedence
+	}
+	return LOWEST
+}
 
 func (p *Parser) nextToken() {
 	p.curToken = p.peekToken
@@ -99,7 +114,7 @@ func (p *Parser) peekError(tknType token.TokenType) {
 }
 
 // ---------------------------------------------------------
-// Parser Private Parser FN & Parser FN Registration Methods
+// Parser FN Registration Methods
 // ---------------------------------------------------------
 
 func (p *Parser) registerPrefix(tokenType token.TokenType, fn prefixParseFn) {
@@ -110,19 +125,7 @@ func (p *Parser) registerInfix(tokenType token.TokenType, fn infixParseFn) {
 	p.infixParseFns[tokenType] = fn
 }
 
-func (p *Parser) parseIdentifier() ast.Expression {
-	return &ast.Identifier{
-		Token: p.curToken,
-		Value: p.curToken.Literal,
-	}
-}
-
-func (p *Parser) parsePrefixExpression() ast.Expression {
-	expression := &ast.PrefixExpression{
-		Token:    p.curToken,
-		Operator: p.curToken.Literal,
-	}
-	p.nextToken()
-	expression.RightExpression = p.parseExpression(PREFIX)
-	return expression
+func (p *Parser) noPrefixParseFnError(t token.TokenType) {
+	msg := fmt.Sprintf("no prefix parse function for %s found", t)
+	p.errors = append(p.errors, msg)
 }
