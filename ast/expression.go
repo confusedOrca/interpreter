@@ -7,7 +7,7 @@ import (
 )
 
 // ------------------------
-// Identifier
+// Identifier Class
 // ------------------------
 
 type Identifier struct {
@@ -20,7 +20,7 @@ func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
 func (i *Identifier) String() string       { return i.Value }
 
 // ------------------------
-// IntegerLiteral
+// IntegerLiteral Class
 // ------------------------
 
 type IntegerLiteral struct {
@@ -33,7 +33,7 @@ func (il *IntegerLiteral) TokenLiteral() string { return il.Token.Literal }
 func (il *IntegerLiteral) String() string       { return il.Token.Literal }
 
 // ------------------------
-// PrefixExpression
+// PrefixExpression Class
 // ------------------------
 
 type PrefixExpression struct {
@@ -46,6 +46,9 @@ func (pe *PrefixExpression) expressionNode()      {}
 func (pe *PrefixExpression) TokenLiteral() string { return pe.Token.Literal }
 func (pe *PrefixExpression) String() string {
 	var out bytes.Buffer
-	out.WriteString("(" + pe.Operator + pe.RightExpression.String() + ")")
+	out.WriteString("(")
+	out.WriteString(pe.Operator)
+	out.WriteString(pe.RightExpression.String())
+	out.WriteString(")")
 	return out.String()
 }

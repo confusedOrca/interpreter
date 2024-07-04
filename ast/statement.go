@@ -7,7 +7,7 @@ import (
 )
 
 // ------------------------
-// LetStatement
+// LetStatement Class
 // ------------------------
 
 type LetStatement struct {
@@ -20,7 +20,10 @@ func (ls *LetStatement) statementNode()       {}
 func (ls *LetStatement) TokenLiteral() string { return ls.Token.Literal }
 func (ls *LetStatement) String() string {
 	var out bytes.Buffer
-	out.WriteString(ls.TokenLiteral() + " " + ls.Ident.Value + " = ")
+	out.WriteString(ls.TokenLiteral())
+	out.WriteString(" ")
+	out.WriteString(ls.Ident.Value)
+	out.WriteString(" = ")
 	if ls.Value != nil {
 		out.WriteString(ls.Value.String())
 	}
@@ -29,7 +32,7 @@ func (ls *LetStatement) String() string {
 }
 
 // ------------------------
-// ReturnStatement
+// ReturnStatement Class
 // ------------------------
 
 type ReturnStatement struct {
@@ -41,7 +44,8 @@ func (rs *ReturnStatement) statementNode()       {}
 func (rs *ReturnStatement) TokenLiteral() string { return rs.Token.Literal }
 func (rs *ReturnStatement) String() string {
 	var out bytes.Buffer
-	out.WriteString(rs.TokenLiteral() + " ")
+	out.WriteString(rs.TokenLiteral())
+	out.WriteString(" ")
 	if rs.ReturnValue != nil {
 		out.WriteString(rs.ReturnValue.String())
 	}
@@ -49,9 +53,9 @@ func (rs *ReturnStatement) String() string {
 	return out.String()
 }
 
-// ------------------------
-// ExpressionStatement
-// ------------------------
+// --------------------------
+// ExpressionStatement Class
+// --------------------------
 
 type ExpressionStatement struct {
 	Token      token.Token

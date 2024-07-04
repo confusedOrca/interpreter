@@ -8,10 +8,6 @@ import (
 	"github.com/confusedOrca/interpreter/token"
 )
 
-/*
-the const assigned iota is 0 and all other const increments by 1
-as we move down the list of constants.
-*/
 const (
 	_ int = iota
 	LOWEST

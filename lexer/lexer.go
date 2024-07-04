@@ -21,31 +21,38 @@ func New(input string) *Lexer {
 // Lexer Public Method
 // ------------------------
 
+const nullChar = 0
+
+var charToTokenType = map[byte]token.TokenType{
+	'+': token.PLUS, '-': token.MINUS, '/': token.SLASH, '*': token.ASTERISK,
+	'<': token.LT, '>': token.GT, ';': token.SEMICOLON, ',': token.COMMA,
+	'(': token.LPAREN, ')': token.RPAREN, '{': token.LBRACE, '}': token.RBRACE,
+}
+
+var stringToTokenType = map[string]token.TokenType{
+	"=": token.ASSIGN, "==": token.EQ, "!": token.BANG, "!=": token.NOT_EQ,
+}
+
 func (lxr *Lexer) NextToken() token.Token {
 	lxr.skipWhitespace()
+
 	var tkn token.Token
 
 	switch lxr.char {
+
 	case '=', '!':
+		caseString := string(lxr.char)
 		if lxr.peekChar() == '=' {
-			if lxr.char == '=' {
-				tkn = newToken(token.EQ, "==")
-			} else {
-				tkn = newToken(token.NOT_EQ, "!=")
-			}
+			caseString += "="
 			lxr.readChar()
-		} else if lxr.char == '=' {
-			tkn = newToken(token.ASSIGN, "=")
-		} else {
-			tkn = newToken(token.BANG, "!")
 		}
+		tkn = newToken(stringToTokenType[caseString], caseString)
 
 	case '+', '-', '/', '*', '<', '>', ';', '(', ')', ',', '{', '}':
 		tkn = newToken(charToTokenType[lxr.char], lxr.char)
 
-	case NULLCHAR:
-		tkn.Literal = ""
-		tkn.Type = token.EOF
+	case nullChar:
+		tkn = newToken(token.EOF, "")
 
 	default:
 		if isLetter(lxr.char) {
@@ -73,7 +80,7 @@ func (lxr *Lexer) NextToken() token.Token {
 
 func (lxr *Lexer) readChar() {
 	if lxr.readPosition >= len(lxr.input) {
-		lxr.char = NULLCHAR
+		lxr.char = nullChar
 	} else {
 		lxr.char = lxr.input[lxr.readPosition]
 	}
@@ -84,7 +91,7 @@ func (lxr *Lexer) readChar() {
 
 func (lxr *Lexer) peekChar() byte {
 	if lxr.readPosition >= len(lxr.input) {
-		return NULLCHAR
+		return nullChar
 	}
 
 	return lxr.input[lxr.readPosition]
