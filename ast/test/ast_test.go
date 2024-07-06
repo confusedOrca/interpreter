@@ -21,7 +21,6 @@ func TestString(t *testing.T) {
 	}
 
 	ls := &ast.LetStatement{Token: tkn, Ident: ident, Value: value}
-
 	program := &ast.Program{Statements: []ast.Statement{ls}}
 
 	if program.String() != "let myVar = anotherVar;" {

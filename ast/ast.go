@@ -17,9 +17,9 @@ type Expression interface {
 	expressionNode()
 }
 
-// -------------------------------
-// Program Class
-// -------------------------------
+// ---------------
+// Program
+// ---------------
 
 const EMPTYSTRING = ""
 

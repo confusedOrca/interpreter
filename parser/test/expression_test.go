@@ -1,6 +1,7 @@
 package parser_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/confusedOrca/interpreter/ast"
@@ -180,4 +181,41 @@ func TestParsingInfixExpressions(t *testing.T) {
 			return
 		}
 	}
+}
+
+// -------------------------------
+// Expression Precedence Test
+// -------------------------------
+
+func TestOperatorPrecedenceParsing(t *testing.T) {
+	for _, tt := range prec_parsing_test {
+		fmt.Println(tt.input)
+		lxr := lexer.New(tt.input)
+		p := parser.New(lxr)
+		program := p.ParseProgram()
+		checkParserErrors(t, p)
+
+		if program.String() != tt.expectedStr {
+			t.Errorf("expected=%q, got=%q", tt.expectedStr, program.String())
+		}
+	}
+}
+
+var prec_parsing_test = []struct {
+	input       string
+	expectedStr string
+}{
+	{"-a * b", "((-a) * b)"},
+	{"!-a", "(!(-a))"},
+	{"a + b + c", "((a + b) + c)"},
+	{"a + b - c", "((a + b) - c)"},
+	{"a * b * c", "((a * b) * c)"},
+	{"a * b / c", "((a * b) / c)"},
+	{"a + b / c", "(a + (b / c))"},
+	{"a + b * c + d / e - f", "(((a + (b * c)) + (d / e)) - f)"},
+	{"3 + 4; -5 * 5", "(3 + 4)((-5) * 5)"},
+	{"5 > 4 == 3 < 4", "((5 > 4) == (3 < 4))"},
+	{"5 < 4 != 3 > 4", "((5 < 4) != (3 > 4))"},
+	{"3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))"},
+	{"3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))"},
 }

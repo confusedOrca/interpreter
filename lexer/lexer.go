@@ -21,18 +21,6 @@ func New(input string) *Lexer {
 // Lexer Public Method
 // ------------------------
 
-const nullChar = 0
-
-var charToTokenType = map[byte]token.TokenType{
-	'+': token.PLUS, '-': token.MINUS, '/': token.SLASH, '*': token.ASTERISK,
-	'<': token.LT, '>': token.GT, ';': token.SEMICOLON, ',': token.COMMA,
-	'(': token.LPAREN, ')': token.RPAREN, '{': token.LBRACE, '}': token.RBRACE,
-}
-
-var stringToTokenType = map[string]token.TokenType{
-	"=": token.ASSIGN, "==": token.EQ, "!": token.BANG, "!=": token.NOT_EQ,
-}
-
 func (lxr *Lexer) NextToken() token.Token {
 	lxr.skipWhitespace()
 
@@ -46,10 +34,10 @@ func (lxr *Lexer) NextToken() token.Token {
 			caseString += "="
 			lxr.readChar()
 		}
-		tkn = newToken(stringToTokenType[caseString], caseString)
+		tkn = newToken(mapToTokenType[caseString], caseString)
 
 	case '+', '-', '/', '*', '<', '>', ';', '(', ')', ',', '{', '}':
-		tkn = newToken(charToTokenType[lxr.char], lxr.char)
+		tkn = newToken(mapToTokenType[string(lxr.char)], lxr.char)
 
 	case nullChar:
 		tkn = newToken(token.EOF, "")
@@ -78,8 +66,10 @@ func (lxr *Lexer) NextToken() token.Token {
 // Lexer Private Methods
 // ------------------------
 
+func (lxr *Lexer) isOutOfBound() bool { return lxr.readPosition >= len(lxr.input) }
+
 func (lxr *Lexer) readChar() {
-	if lxr.readPosition >= len(lxr.input) {
+	if lxr.isOutOfBound() {
 		lxr.char = nullChar
 	} else {
 		lxr.char = lxr.input[lxr.readPosition]
@@ -90,7 +80,7 @@ func (lxr *Lexer) readChar() {
 }
 
 func (lxr *Lexer) peekChar() byte {
-	if lxr.readPosition >= len(lxr.input) {
+	if lxr.isOutOfBound() {
 		return nullChar
 	}
 
@@ -99,7 +89,6 @@ func (lxr *Lexer) peekChar() byte {
 
 func (lxr *Lexer) readBlock(isValid func(byte) bool) string {
 	startPosition := lxr.position
-
 	for isValid(lxr.char) {
 		lxr.readChar()
 	}
@@ -107,8 +96,8 @@ func (lxr *Lexer) readBlock(isValid func(byte) bool) string {
 	return lxr.input[startPosition:lxr.position]
 }
 
-func (lxr *Lexer) skipWhitespace() {
-	for isWhiteSpace(lxr.char) {
-		lxr.readChar()
+func (l *Lexer) skipWhitespace() {
+	for isWhiteSpace(l.char) {
+		l.readChar()
 	}
 }

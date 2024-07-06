@@ -8,10 +8,6 @@ import (
 	"github.com/confusedOrca/interpreter/token"
 )
 
-// ---------------------
-// Expression Parser
-//-----------------------
-
 func (p *Parser) parseExpression(precedence int) ast.Expression {
 	prefix := p.prefixParseFns[p.curToken.Type]
 	if prefix == nil {

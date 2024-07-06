@@ -17,6 +17,7 @@ var letStmt_input = `
 	let y = 10;
 	let foobar = 838383;
 	`
+
 var letStmt_expIdents = []struct {
 	Name string
 }{

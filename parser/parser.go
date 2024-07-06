@@ -18,27 +18,31 @@ type Parser struct {
 }
 
 func New(lxr *lexer.Lexer) *Parser {
-	newParser := &Parser{
+	p := &Parser{
 		lexer:          lxr,
 		errors:         []string{},
 		prefixParseFns: make(map[token.TokenType]prefixParseFn),
 		infixParseFns:  make(map[token.TokenType]infixParseFn),
 	}
 
-	newParser.registerPrefix(token.IDENT, newParser.parseIdentifier)
-	newParser.registerPrefix(token.INT, newParser.parseIntegerLiteral)
+	p.registerPrefix(token.IDENT, p.parseIdentifier)
+	p.registerPrefix(token.INT, p.parseIntegerLiteral)
+	p.registerPrefix(token.BANG, p.parsePrefixExpression)
+	p.registerPrefix(token.MINUS, p.parsePrefixExpression)
 
-	newParser.registerPrefix(token.BANG, newParser.parsePrefixExpression)
-	newParser.registerPrefix(token.MINUS, newParser.parsePrefixExpression)
+	p.registerInfix(token.PLUS, p.parseInfixExpression)
+	p.registerInfix(token.MINUS, p.parseInfixExpression)
+	p.registerInfix(token.SLASH, p.parseInfixExpression)
+	p.registerInfix(token.ASTERISK, p.parseInfixExpression)
+	p.registerInfix(token.EQ, p.parseInfixExpression)
+	p.registerInfix(token.NOT_EQ, p.parseInfixExpression)
+	p.registerInfix(token.LT, p.parseInfixExpression)
+	p.registerInfix(token.GT, p.parseInfixExpression)
 
-	for tokenType := range precedences {
-		newParser.registerInfix(tokenType, newParser.parseInfixExpression)
-	}
+	p.nextToken()
+	p.nextToken()
 
-	newParser.nextToken()
-	newParser.nextToken()
-
-	return newParser
+	return p
 }
 
 // ------------------------
@@ -46,8 +50,8 @@ func New(lxr *lexer.Lexer) *Parser {
 // ------------------------
 
 func (p *Parser) ParseProgram() *ast.Program {
-	program := &ast.Program{Statements: []ast.Statement{}}
-
+	program := &ast.Program{}
+	program.Statements = []ast.Statement{}
 	for p.curToken.Type != token.EOF {
 		stmt := p.parseStatement()
 		if stmt != nil {
@@ -55,7 +59,6 @@ func (p *Parser) ParseProgram() *ast.Program {
 		}
 		p.nextToken()
 	}
-
 	return program
 }
 

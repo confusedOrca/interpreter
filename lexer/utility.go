@@ -8,6 +8,16 @@ type TokenLiteral interface {
 	~byte | ~string
 }
 
+const nullChar = 0
+const emptyString = ""
+
+var mapToTokenType = map[string]token.TokenType{
+	"+": token.PLUS, "-": token.MINUS, "/": token.SLASH, "*": token.ASTERISK,
+	"<": token.LT, ">": token.GT, ";": token.SEMICOLON, ",": token.COMMA,
+	"(": token.LPAREN, ")": token.RPAREN, "{": token.LBRACE, "}": token.RBRACE,
+	"=": token.ASSIGN, "==": token.EQ, "!": token.BANG, "!=": token.NOT_EQ,
+}
+
 func newToken[T TokenLiteral](tokenType token.TokenType, ch T) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
 }
