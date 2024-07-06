@@ -18,18 +18,16 @@ type Expression interface {
 }
 
 // ---------------
-// Program
+// Program Class
 // ---------------
 
-const EMPTYSTRING = ""
+type Program struct{ Statements []Statement }
 
-type Program struct {
-	Statements []Statement
-}
+const emptyString = ""
 
 func (p *Program) TokenLiteral() string {
 	if len(p.Statements) == 0 {
-		return EMPTYSTRING
+		return emptyString
 	}
 	return p.Statements[0].TokenLiteral()
 }

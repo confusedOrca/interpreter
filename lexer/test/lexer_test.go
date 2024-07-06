@@ -25,10 +25,6 @@ func TestNextToken(t *testing.T) {
 	}
 }
 
-// ------------------------
-// Test Case for Lexer
-// ------------------------
-
 var test_input = `let five = 5;
 				let ten = 10;
 				let add = fn(x, y) {

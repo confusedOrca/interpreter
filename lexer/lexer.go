@@ -25,8 +25,9 @@ func (lxr *Lexer) NextToken() token.Token {
 	lxr.skipWhitespace()
 
 	var tkn token.Token
-
 	switch lxr.char {
+	case '+', '-', '/', '*', '<', '>', ';', '(', ')', ',', '{', '}':
+		tkn = newToken(mapToTokenType[string(lxr.char)], lxr.char)
 
 	case '=', '!':
 		caseString := string(lxr.char)
@@ -36,11 +37,8 @@ func (lxr *Lexer) NextToken() token.Token {
 		}
 		tkn = newToken(mapToTokenType[caseString], caseString)
 
-	case '+', '-', '/', '*', '<', '>', ';', '(', ')', ',', '{', '}':
-		tkn = newToken(mapToTokenType[string(lxr.char)], lxr.char)
-
 	case nullChar:
-		tkn = newToken(token.EOF, "")
+		tkn = newToken(token.EOF, emptyString)
 
 	default:
 		if isLetter(lxr.char) {

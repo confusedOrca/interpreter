@@ -1,7 +1,6 @@
 package parser_test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/confusedOrca/interpreter/ast"
@@ -189,7 +188,6 @@ func TestParsingInfixExpressions(t *testing.T) {
 
 func TestOperatorPrecedenceParsing(t *testing.T) {
 	for _, tt := range prec_parsing_test {
-		fmt.Println(tt.input)
 		lxr := lexer.New(tt.input)
 		p := parser.New(lxr)
 		program := p.ParseProgram()
