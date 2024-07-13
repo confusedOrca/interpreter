@@ -32,6 +32,7 @@ func New(lxr *lexer.Lexer) *Parser {
 	p.registerPrefix(token.TRUE, p.parseBoolean)
 	p.registerPrefix(token.FALSE, p.parseBoolean)
 	p.registerPrefix(token.IF, p.parseIfExpression)
+	p.registerPrefix(token.FUNCTION, p.parseFunctionLiteral)
 
 	for tokenType := range precedences {
 		p.registerInfix(tokenType, p.parseInfixExpression)
