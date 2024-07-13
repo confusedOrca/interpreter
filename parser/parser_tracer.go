@@ -3,6 +3,8 @@ package parser
 import (
 	"fmt"
 	"strings"
+
+	globalstate "github.com/confusedOrca/interpreter/global_state"
 )
 
 var traceLvl int = 0
@@ -21,12 +23,18 @@ func incIdent() { traceLvl += 1 }
 func decIdent() { traceLvl -= 1 }
 
 func trace(msg string) string {
-	incIdent()
-	tracePrint("BEGIN " + msg)
-	return msg
+	if globalstate.VERBOSE {
+		incIdent()
+		tracePrint("BEGIN " + msg)
+		return msg
+	} else {
+		return ""
+	}
 }
 
 func untrace(msg string) {
-	tracePrint("END " + msg)
-	decIdent()
+	if globalstate.VERBOSE {
+		tracePrint("END " + msg)
+		decIdent()
+	}
 }

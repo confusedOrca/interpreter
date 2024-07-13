@@ -4,8 +4,6 @@ import (
 	"testing"
 
 	"github.com/confusedOrca/interpreter/ast"
-	"github.com/confusedOrca/interpreter/lexer"
-	"github.com/confusedOrca/interpreter/parser"
 )
 
 // -------------------- Let Statements Test --------------
@@ -68,31 +66,35 @@ func testLetStatement(t *testing.T, stmt ast.Statement, identName string) bool {
 
 // ---------------------- Return Statement Test ---------------
 
-var retStmt_input = `
-	return 5;
-	return 10;
-	return 993322;
-	`
-
 func TestReturnStatements(t *testing.T) {
-	lxr := lexer.New(retStmt_input)
-	parser := parser.New(lxr)
-	program := parser.ParseProgram()
-	checkParserErrors(t, parser)
-
-	if len(program.Statements) != 3 {
-		t.Fatalf("program.Statements does not contain 3 statements. got=%d", len(program.Statements))
+	tests := []struct {
+		input         string
+		expectedValue interface{}
+	}{
+		{"return 5;", 5},
+		{"return true;", true},
+		{"return foobar;", "foobar"},
 	}
 
-	for _, stmt := range program.Statements {
-		returnStmt, ok := stmt.(*ast.ReturnStatement)
-		if !ok {
-			t.Errorf("stmt not *ast.returnStatement, got=%T", stmt)
-			continue
+	for _, tt := range tests {
+		program := getParsedProgram(t, tt.input)
+
+		if len(program.Statements) != 1 {
+			t.Fatalf("program.Statements does not contain 1 statements. got=%d",
+				len(program.Statements))
 		}
 
+		stmt := program.Statements[0]
+		returnStmt, ok := stmt.(*ast.ReturnStatement)
+		if !ok {
+			t.Fatalf("stmt not *ast.returnStatement. got=%T", stmt)
+		}
 		if returnStmt.TokenLiteral() != "return" {
-			t.Errorf("returnStmt.TokenLiteral not 'return', got %q", returnStmt.TokenLiteral())
+			t.Fatalf("returnStmt.TokenLiteral not 'return', got %q",
+				returnStmt.TokenLiteral())
+		}
+		if testLiteralExpression(t, returnStmt.ReturnValue, tt.expectedValue) {
+			return
 		}
 	}
 }
