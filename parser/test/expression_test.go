@@ -4,8 +4,6 @@ import (
 	"testing"
 
 	"github.com/confusedOrca/interpreter/ast"
-	"github.com/confusedOrca/interpreter/lexer"
-	"github.com/confusedOrca/interpreter/parser"
 )
 
 // -------------------------------
@@ -13,13 +11,7 @@ import (
 // -------------------------------
 
 func TestIdentifierExpression(t *testing.T) {
-	input := "foobar;"
-	program := getParsedProgram(t, input)
-	/*
-		lxr := lexer.New(input)
-		parser := parser.New(lxr)
-		program := parser.ParseProgram()
-		checkParserErrors(t, parser)*/
+	program := getParsedProgram(t, "foobar")
 
 	if len(program.Statements) != 1 {
 		t.Fatalf("program has not enough statements. got = %d", len(program.Statements))
@@ -41,11 +33,7 @@ func TestIdentifierExpression(t *testing.T) {
 // -------------------------------
 
 func TestIntegerLiteralExpression(t *testing.T) {
-	input := "5;"
-	lxr := lexer.New(input)
-	parser := parser.New(lxr)
-	program := parser.ParseProgram()
-	checkParserErrors(t, parser)
+	program := getParsedProgram(t, "5;")
 
 	if len(program.Statements) != 1 {
 		t.Fatalf("program has not enough statements. got=%d",
@@ -78,10 +66,7 @@ func TestParsingPrefixExpressions(t *testing.T) {
 	}
 
 	for _, tt := range prefixTests {
-		lxr := lexer.New(tt.input)
-		parser := parser.New(lxr)
-		program := parser.ParseProgram()
-		checkParserErrors(t, parser)
+		program := getParsedProgram(t, tt.input)
 
 		if len(program.Statements) != 1 {
 			t.Fatalf("program.Statements does not contain %d statements. got=%d\n",
@@ -134,10 +119,7 @@ func TestParsingInfixExpressions(t *testing.T) {
 	}
 
 	for _, tt := range infixTests {
-		lxr := lexer.New(tt.input)
-		parser := parser.New(lxr)
-		program := parser.ParseProgram()
-		checkParserErrors(t, parser)
+		program := getParsedProgram(t, tt.input)
 
 		if len(program.Statements) != 1 {
 			t.Fatalf("program.Statements does not contain %d statements. got=%d\n",
@@ -176,10 +158,7 @@ func TestParsingInfixExpressions(t *testing.T) {
 
 func TestOperatorPrecedenceParsing(t *testing.T) {
 	for _, tt := range prec_parsing_test {
-		lxr := lexer.New(tt.input)
-		p := parser.New(lxr)
-		program := p.ParseProgram()
-		checkParserErrors(t, p)
+		program := getParsedProgram(t, tt.input)
 
 		if program.String() != tt.expectedStr {
 			t.Errorf("expected=%q, got=%q", tt.expectedStr, program.String())
@@ -199,11 +178,7 @@ var prec_parsing_test = []struct {
 // If Expression Test
 // -------------------------------
 func TestIfExpression(t *testing.T) {
-	input := `if (x < y) { x }`
-	lxr := lexer.New(input)
-	parser := parser.New(lxr)
-	program := parser.ParseProgram()
-	checkParserErrors(t, parser)
+	program := getParsedProgram(t, `if (x < y) { x }`)
 
 	if len(program.Statements) != 1 {
 		t.Fatalf("program.Body does not contain %d statements. got=%d\n",
@@ -250,12 +225,7 @@ func TestIfExpression(t *testing.T) {
 // -------------------------------
 
 func TestIfElseExpression(t *testing.T) {
-	input := `if (x < y) { x } else { y }`
-
-	lxr := lexer.New(input)
-	parser := parser.New(lxr)
-	program := parser.ParseProgram()
-	checkParserErrors(t, parser)
+	program := getParsedProgram(t, `if (x < y) { x } else { y }`)
 
 	if len(program.Statements) != 1 {
 		t.Fatalf("program.Body does not contain %d statements. got=%d\n",
@@ -311,12 +281,9 @@ func TestIfElseExpression(t *testing.T) {
 // -------------------------------
 // Function Literal Expression Test
 // -------------------------------
+
 func TestFunctionLiteralParsing(t *testing.T) {
-	input := `fn(x, y) { x + y; }`
-	lxr := lexer.New(input)
-	parser := parser.New(lxr)
-	program := parser.ParseProgram()
-	checkParserErrors(t, parser)
+	program := getParsedProgram(t, `fn(x, y) { x + y; }`)
 
 	if len(program.Statements) != 1 {
 		t.Fatalf("program.Body does not contain %d statements. got=%d\n",
