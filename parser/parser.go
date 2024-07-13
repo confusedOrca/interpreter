@@ -8,6 +8,11 @@ import (
 	"github.com/confusedOrca/interpreter/token"
 )
 
+type (
+	prefixParseFn func() ast.Expression
+	infixParseFn  func(ast.Expression) ast.Expression
+)
+
 type Parser struct {
 	lexer          *lexer.Lexer
 	curToken       token.Token
@@ -37,6 +42,7 @@ func New(lxr *lexer.Lexer) *Parser {
 	for tokenType := range precedences {
 		p.registerInfix(tokenType, p.parseInfixExpression)
 	}
+	p.registerInfix(token.LPAREN, p.parseCallExpression)
 
 	p.nextToken()
 	p.nextToken()
@@ -44,9 +50,7 @@ func New(lxr *lexer.Lexer) *Parser {
 	return p
 }
 
-// ------------------------
-// Parser Public Method
-// ------------------------
+// ------------------------ Parser Public Method ------------------------
 
 func (p *Parser) ParseProgram() *ast.Program {
 	program := &ast.Program{}
@@ -61,9 +65,7 @@ func (p *Parser) ParseProgram() *ast.Program {
 
 func (parser *Parser) Errors() []string { return parser.errors }
 
-// -------------------------------
-// Parser Private Utility Methods
-// -------------------------------
+// ----------------- Parser Private Utility Methods -----------------------
 
 func (p *Parser) peekPrecedence() int {
 	if precedence, ok := precedences[p.peekToken.Type]; ok {
@@ -111,9 +113,7 @@ func (p *Parser) peekError(tknType token.TokenType) {
 	p.errors = append(p.errors, msg)
 }
 
-// ---------------------------------------------------------
-// Parser FN Registration Methods
-// ---------------------------------------------------------
+// ------------------ Parser FN Registration Methods ---------------------
 
 func (p *Parser) registerPrefix(tokenType token.TokenType, fn prefixParseFn) {
 	p.prefixParseFns[tokenType] = fn

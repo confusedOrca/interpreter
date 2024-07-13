@@ -6,9 +6,7 @@ import (
 	"github.com/confusedOrca/interpreter/token"
 )
 
-// ------------------------
-// LetStatement Class
-// ------------------------
+// ------------------------ LetStatement Class ------------------------
 
 type LetStatement struct {
 	Token token.Token
@@ -31,9 +29,7 @@ func (ls *LetStatement) String() string {
 	return out.String()
 }
 
-// ------------------------
-// ReturnStatement Class
-// ------------------------
+// ------------------------ ReturnStatement Class ------------------------
 
 type ReturnStatement struct {
 	Token       token.Token
@@ -53,9 +49,7 @@ func (rs *ReturnStatement) String() string {
 	return out.String()
 }
 
-// --------------------------
-// ExpressionStatement Class
-// --------------------------
+// -------------------------- ExpressionStatement Class --------------------------
 
 type ExpressionStatement struct {
 	Token      token.Token
@@ -71,9 +65,7 @@ func (es *ExpressionStatement) String() string {
 	return es.Expression.String()
 }
 
-// --------------------------
-// Block Statement Class
-// --------------------------
+// -------------------------- Block Statement Class --------------------------
 
 type BlockStatement struct {
 	Token      token.Token

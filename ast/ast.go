@@ -17,16 +17,14 @@ type Expression interface {
 	expressionNode()
 }
 
-// ---------------
-// Program Class
-// ---------------
+// --------------- Program Class ---------------
 
 type Program struct{ Statements []Statement }
 
 const emptyString = ""
 
 func (p *Program) TokenLiteral() string {
-	if len(p.Statements) == 0 {
+	if len(p.Statements) > 0 {
 		return emptyString
 	}
 	return p.Statements[0].TokenLiteral()

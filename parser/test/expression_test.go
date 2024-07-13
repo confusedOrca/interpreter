@@ -6,9 +6,7 @@ import (
 	"github.com/confusedOrca/interpreter/ast"
 )
 
-// -------------------------------
-// Identifier Expression Test
-// -------------------------------
+// -------------------- Identifier Expression Test --------------------
 
 func TestIdentifierExpression(t *testing.T) {
 	program := getParsedProgram(t, "foobar")
@@ -28,9 +26,7 @@ func TestIdentifierExpression(t *testing.T) {
 	}
 }
 
-// -------------------------------
-// Integer Literal Expression Test
-// -------------------------------
+// --------------------- Integer Literal Expression Test --------------------
 
 func TestIntegerLiteralExpression(t *testing.T) {
 	program := getParsedProgram(t, "5;")
@@ -49,9 +45,7 @@ func TestIntegerLiteralExpression(t *testing.T) {
 	testIntegerLiteral(t, stmt.Expression, 5)
 }
 
-// -------------------------------
-// Prefix Expression Test
-// -------------------------------
+// --------------------- Prefix Expression Test --------------------
 
 func TestParsingPrefixExpressions(t *testing.T) {
 	prefixTests := []struct {
@@ -95,9 +89,7 @@ func TestParsingPrefixExpressions(t *testing.T) {
 	}
 }
 
-// -------------------------------
-// Infix Expression Test
-// -------------------------------
+// --------------------- Infix Expression Test --------------------
 
 func TestParsingInfixExpressions(t *testing.T) {
 	infixTests := []struct {
@@ -152,9 +144,7 @@ func TestParsingInfixExpressions(t *testing.T) {
 	}
 }
 
-// -------------------------------
-// Expression Precedence Test
-// -------------------------------
+// --------------------- Expression Precedence Test --------------------
 
 func TestOperatorPrecedenceParsing(t *testing.T) {
 	for _, tt := range prec_parsing_test {
@@ -172,11 +162,10 @@ var prec_parsing_test = []struct {
 }{
 	{"-1 * 2", "((-1) * 2)"},
 	{"3 < 5 == true", "((3 < 5) == true)"},
+	{"add(a + b + c * d / f + g)", "add((((a + b) + ((c * d) / f)) + g))"},
 }
 
-// -------------------------------
-// If Expression Test
-// -------------------------------
+// ----------------------- If Expression Test ---------------------------
 func TestIfExpression(t *testing.T) {
 	program := getParsedProgram(t, `if (x < y) { x }`)
 
@@ -220,9 +209,7 @@ func TestIfExpression(t *testing.T) {
 	}
 }
 
-// -------------------------------
-// If Else Expression Test
-// -------------------------------
+// -------------------- If Else Expression Test ----------------
 
 func TestIfElseExpression(t *testing.T) {
 	program := getParsedProgram(t, `if (x < y) { x } else { y }`)
@@ -278,9 +265,7 @@ func TestIfElseExpression(t *testing.T) {
 	}
 }
 
-// -------------------------------
-// Function Literal Expression Test
-// -------------------------------
+// ------------------ Function Literal Expression Test ----------------------
 
 func TestFunctionLiteralParsing(t *testing.T) {
 	program := getParsedProgram(t, `fn(x, y) { x + y; }`)
@@ -322,4 +307,38 @@ func TestFunctionLiteralParsing(t *testing.T) {
 	}
 
 	testInfixExpression(t, bodyStmt.Expression, "x", "+", "y")
+}
+
+// ----------------- Call Expression Test ----------------------
+func TestCallExpressionParsing(t *testing.T) {
+	program := getParsedProgram(t, "add(1, 2 * 3, 4 + 5);")
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program.Statements does not contain %d statements. got=%d\n",
+			1, len(program.Statements))
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("stmt is not ast.ExpressionStatement. got=%T",
+			program.Statements[0])
+	}
+
+	exp, ok := stmt.Expression.(*ast.CallExpression)
+	if !ok {
+		t.Fatalf("stmt.Expression is not ast.CallExpression. got=%T",
+			stmt.Expression)
+	}
+
+	if !testIdentifier(t, exp.Function, "add") {
+		return
+	}
+
+	if len(exp.Arguments) != 3 {
+		t.Fatalf("wrong length of arguments. got=%d", len(exp.Arguments))
+	}
+
+	testLiteralExpression(t, exp.Arguments[0], 1)
+	testInfixExpression(t, exp.Arguments[1], 2, "*", 3)
+	testInfixExpression(t, exp.Arguments[2], 4, "+", 5)
 }

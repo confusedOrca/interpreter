@@ -53,10 +53,6 @@ var keywords = map[string]TokenType{
 	"return": RETURN,
 }
 
-// -----------------
-// Public Function
-// -----------------
-
 func LookupIdent(ident string) TokenType {
 	if tkn, ok := keywords[ident]; ok {
 		return tkn

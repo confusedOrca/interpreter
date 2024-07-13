@@ -6,6 +6,7 @@ import (
 )
 
 func (p *Parser) parseStatement() ast.Statement {
+	defer untrace(trace("parseStatement"))
 	switch p.curToken.Type {
 
 	case token.LET:
@@ -19,11 +20,10 @@ func (p *Parser) parseStatement() ast.Statement {
 	}
 }
 
-// ------------------------
-// Let Statement Parser
-// ------------------------
+// ------------------------ Let Statement Parser ------------------------
 
 func (p *Parser) parseLetStatement() *ast.LetStatement {
+	defer untrace(trace("parseLetStatement"))
 	stmt := &ast.LetStatement{Token: p.curToken}
 
 	if !p.expectPeek(token.IDENT) {
@@ -41,11 +41,10 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 	return stmt
 }
 
-// ------------------------
-// Return Statement Parser
-// ------------------------
+// ------------------------ Return Statement Parser ------------------------
 
 func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
+	defer untrace(trace("parseReturnStatement"))
 	stmt := &ast.ReturnStatement{
 		Token: p.curToken,
 	}
@@ -59,9 +58,7 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	return stmt
 }
 
-// ------------------------
-// Expression Statement Parser
-// ------------------------
+// ---------------------- Expression Statement Parser ----------------------
 
 func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
 	defer untrace(trace("parseExpressionStatement"))
@@ -78,13 +75,14 @@ func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
 	return stmt
 }
 
-// ------------------------
-// Block Statement Parser
-// ------------------------
+// ------------------------ Block Statement Parser ------------------------
+
 func (p *Parser) parseBlockStatement() *ast.BlockStatement {
+	defer untrace(trace("parseBlockStatement"))
 	block := &ast.BlockStatement{Token: p.curToken}
 	block.Statements = []ast.Statement{}
 	p.nextToken()
+
 	for !p.curTokenIs(token.RBRACE) && !p.curTokenIs(token.EOF) {
 		stmt := p.parseStatement()
 		if stmt != nil {
@@ -92,5 +90,6 @@ func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 		}
 		p.nextToken()
 	}
+
 	return block
 }

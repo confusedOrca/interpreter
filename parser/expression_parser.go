@@ -31,9 +31,7 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 	return leftExp
 }
 
-// ------------------------
-// Integer Literal Parser
-// ------------------------
+// ------------------------ Integer Literal Parser ------------------------
 
 func (p *Parser) parseIntegerLiteral() ast.Expression {
 	defer untrace(trace("parseIntegerLiteral"))
@@ -51,20 +49,17 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 	return lit
 }
 
-// ------------------------
-// Identifier Parser
-// ------------------------
+// ------------------------ Identifier Parser ------------------------
 
 func (p *Parser) parseIdentifier() ast.Expression {
+	defer untrace(trace("parseIdentifier"))
 	return &ast.Identifier{
 		Token: p.curToken,
 		Value: p.curToken.Literal,
 	}
 }
 
-// ------------------------
-// Prefix Expression Parser
-// ------------------------
+// ---------------------- Prefix Expression Parser ------------------------
 
 func (p *Parser) parsePrefixExpression() ast.Expression {
 	defer untrace(trace("parsePrefixExpression"))
@@ -78,9 +73,7 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 	return expression
 }
 
-// ------------------------
-// Infix Expression Parser
-// ------------------------
+// ------------------------ Infix Expression Parser ------------------------
 
 func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
 	defer untrace(trace("parseInfixExpression"))
@@ -96,20 +89,18 @@ func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
 	return expression
 }
 
-// ------------------------
-// Boolean Expression Parser
-// ------------------------
+// ---------------------- Boolean Expression Parser -----------------------
 
 func (p *Parser) parseBoolean() ast.Expression {
+	defer untrace(trace("parseBoolean"))
 	return &ast.Boolean{
 		Token: p.curToken, Value: p.curTokenIs(token.TRUE),
 	}
 }
 
-// ------------------------
-// If Else Expression Parser
-// ------------------------
+// ------------------------ If Else Expression Parser ------------------------
 func (p *Parser) parseIfExpression() ast.Expression {
+	defer untrace(trace("parseIfElseExpression"))
 	expression := &ast.IfExpression{Token: p.curToken}
 	if !p.expectPeek(token.LPAREN) {
 		return nil
@@ -136,10 +127,10 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	return expression
 }
 
-// -----------------------------------
-// Function Literal Expression Parser
-// -----------------------------------
+// -------------------- Function Literal Expression Parser -----------------
+
 func (p *Parser) parseFunctionLiteral() ast.Expression {
+	defer untrace(trace("parseFunctionLiteral"))
 	lit := &ast.FunctionLiteral{Token: p.curToken}
 	if !p.expectPeek(token.LPAREN) {
 		return nil
@@ -153,6 +144,7 @@ func (p *Parser) parseFunctionLiteral() ast.Expression {
 }
 
 func (p *Parser) parseFunctionParameters() []*ast.Identifier {
+	defer untrace(trace("parseFunctionParameters"))
 	identifiers := []*ast.Identifier{}
 	if p.peekTokenIs(token.RPAREN) {
 		p.nextToken()
@@ -171,4 +163,33 @@ func (p *Parser) parseFunctionParameters() []*ast.Identifier {
 		return nil
 	}
 	return identifiers
+}
+
+// ---------------------- Call Expression Parser ------------------------
+
+func (p *Parser) parseCallExpression(function ast.Expression) ast.Expression {
+	defer untrace(trace("parseCallExpression"))
+	exp := &ast.CallExpression{Token: p.curToken, Function: function}
+	exp.Arguments = p.parseCallArguments()
+	return exp
+}
+
+func (p *Parser) parseCallArguments() []ast.Expression {
+	defer untrace(trace("parseCallArguements"))
+	args := []ast.Expression{}
+	if p.peekTokenIs(token.RPAREN) {
+		p.nextToken()
+		return args
+	}
+	p.nextToken()
+	args = append(args, p.parseExpression(LOWEST))
+	for p.peekTokenIs(token.COMMA) {
+		p.nextToken()
+		p.nextToken()
+		args = append(args, p.parseExpression(LOWEST))
+	}
+	if !p.expectPeek(token.RPAREN) {
+		return nil
+	}
+	return args
 }

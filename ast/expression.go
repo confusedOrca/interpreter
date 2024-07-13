@@ -7,9 +7,7 @@ import (
 	"github.com/confusedOrca/interpreter/token"
 )
 
-// ------------------------
-// Identifier Class
-// ------------------------
+// ------------------------ Identifier Class ------------------------
 
 type Identifier struct {
 	Token token.Token
@@ -20,9 +18,7 @@ func (i *Identifier) expressionNode()      {}
 func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
 func (i *Identifier) String() string       { return i.Value }
 
-// ------------------------
-// IntegerLiteral Class
-// ------------------------
+// ------------------------ IntegerLiteral Class ------------------------
 
 type IntegerLiteral struct {
 	Token token.Token
@@ -33,9 +29,7 @@ func (il *IntegerLiteral) expressionNode()      {}
 func (il *IntegerLiteral) TokenLiteral() string { return il.Token.Literal }
 func (il *IntegerLiteral) String() string       { return il.Token.Literal }
 
-// ------------------------
-// PrefixExpression Class
-// ------------------------
+// ------------------------ PrefixExpression Class ------------------------
 
 type PrefixExpression struct {
 	Token    token.Token
@@ -54,9 +48,7 @@ func (pe *PrefixExpression) String() string {
 	return out.String()
 }
 
-// ------------------------
-// InfixExpression Class
-// ------------------------
+// ------------------------ InfixExpression Class ------------------------
 
 type InfixExpression struct {
 	Token    token.Token
@@ -79,9 +71,8 @@ func (ie *InfixExpression) String() string {
 	return out.String()
 }
 
-// ------------------------
-// Boolean Expression Class
-// ------------------------
+// ------------------------ Boolean Expression Class ------------------------
+
 type Boolean struct {
 	Token token.Token
 	Value bool
@@ -91,9 +82,8 @@ func (b *Boolean) expressionNode()      {}
 func (b *Boolean) TokenLiteral() string { return b.Token.Literal }
 func (b *Boolean) String() string       { return b.Token.Literal }
 
-// ------------------------
-// If Expression Class
-// ------------------------
+// ------------------------ If Expression Class ------------------------
+
 type IfExpression struct {
 	Token       token.Token
 	Condition   Expression
@@ -116,9 +106,8 @@ func (ie *IfExpression) String() string {
 	return out.String()
 }
 
-// ------------------------
-// Function Literal Class
-// ------------------------
+// ------------------------ Function Literal Class ------------------------
+
 type FunctionLiteral struct {
 	Token      token.Token
 	Parameters []*Identifier
@@ -138,5 +127,28 @@ func (fl *FunctionLiteral) String() string {
 	out.WriteString(strings.Join(params, ", "))
 	out.WriteString(") ")
 	out.WriteString(fl.Body.String())
+	return out.String()
+}
+
+// ------------------------ Call Expression Class ------------------------
+
+type CallExpression struct {
+	Token     token.Token
+	Function  Expression
+	Arguments []Expression
+}
+
+func (ce *CallExpression) expressionNode()      {}
+func (ce *CallExpression) TokenLiteral() string { return ce.Token.Literal }
+func (ce *CallExpression) String() string {
+	var out bytes.Buffer
+	args := []string{}
+	for _, a := range ce.Arguments {
+		args = append(args, a.String())
+	}
+	out.WriteString(ce.Function.String())
+	out.WriteString("(")
+	out.WriteString(strings.Join(args, ", "))
+	out.WriteString(")")
 	return out.String()
 }

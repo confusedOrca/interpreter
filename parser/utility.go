@@ -1,13 +1,7 @@
 package parser
 
 import (
-	"github.com/confusedOrca/interpreter/ast"
 	"github.com/confusedOrca/interpreter/token"
-)
-
-type (
-	prefixParseFn func() ast.Expression
-	infixParseFn  func(ast.Expression) ast.Expression
 )
 
 const (
@@ -30,4 +24,5 @@ var precedences = map[token.TokenType]int{
 	token.MINUS:    SUM,
 	token.SLASH:    PRODUCT,
 	token.ASTERISK: PRODUCT,
+	token.LPAREN:   CALL,
 }

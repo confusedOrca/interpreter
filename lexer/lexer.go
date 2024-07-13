@@ -17,9 +17,7 @@ func New(input string) *Lexer {
 	return newLxr
 }
 
-// ------------------------
-// Lexer Public Method
-// ------------------------
+// ------------------------ Lexer Public Method ------------------------
 
 func (lxr *Lexer) NextToken() token.Token {
 	lxr.skipWhitespace()
@@ -60,11 +58,11 @@ func (lxr *Lexer) NextToken() token.Token {
 	return tkn
 }
 
-// ------------------------
-// Lexer Private Methods
-// ------------------------
+// ------------------------ Lexer Private Methods ------------------------
 
-func (lxr *Lexer) isOutOfBound() bool { return lxr.readPosition >= len(lxr.input) }
+func (lxr *Lexer) isOutOfBound() bool {
+	return lxr.readPosition >= len(lxr.input)
+}
 
 func (lxr *Lexer) readChar() {
 	if lxr.isOutOfBound() {
@@ -72,7 +70,6 @@ func (lxr *Lexer) readChar() {
 	} else {
 		lxr.char = lxr.input[lxr.readPosition]
 	}
-
 	lxr.position = lxr.readPosition
 	lxr.readPosition += 1
 }
@@ -81,7 +78,6 @@ func (lxr *Lexer) peekChar() byte {
 	if lxr.isOutOfBound() {
 		return nullChar
 	}
-
 	return lxr.input[lxr.readPosition]
 }
 
@@ -90,7 +86,6 @@ func (lxr *Lexer) readBlock(isValid func(byte) bool) string {
 	for isValid(lxr.char) {
 		lxr.readChar()
 	}
-
 	return lxr.input[startPosition:lxr.position]
 }
 

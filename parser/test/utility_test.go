@@ -17,9 +17,7 @@ func getParsedProgram(t *testing.T, input string) ast.Program {
 	return *program
 }
 
-// --------------------------
-// Test Parsing Error
-// --------------------------
+// ------------------------ Test Parsing Error -------------------
 
 func checkParserErrors(t *testing.T, parser *parser.Parser) {
 	errors := parser.Errors()
@@ -36,9 +34,7 @@ func checkParserErrors(t *testing.T, parser *parser.Parser) {
 	t.FailNow()
 }
 
-// --------------------------
-// Integer Literal Test
-// --------------------------
+// -------------------------- Integer Literal Test -------------------
 
 func testIntegerLiteral(t *testing.T, il ast.Expression, value int64) bool {
 	integer, ok := il.(*ast.IntegerLiteral)
@@ -61,9 +57,7 @@ func testIntegerLiteral(t *testing.T, il ast.Expression, value int64) bool {
 	return true
 }
 
-// --------------------------
-// Identifier Test
-// --------------------------
+// ------------------- Identifier Test -------------------
 
 func testIdentifier(t *testing.T, exp ast.Expression, value string) bool {
 	ident, ok := exp.(*ast.Identifier)
@@ -83,9 +77,7 @@ func testIdentifier(t *testing.T, exp ast.Expression, value string) bool {
 	return true
 }
 
-// --------------------------
-// Literal Expression Test
-// --------------------------
+// ----------------------- Literal Expression Test -----------------------
 func testLiteralExpression(
 	t *testing.T,
 	exp ast.Expression,
@@ -105,9 +97,7 @@ func testLiteralExpression(
 	return false
 }
 
-// --------------------------
-// Infix Expression Test
-// --------------------------
+// ----------------- Infix Expression Test --------------------
 func testInfixExpression(t *testing.T, exp ast.Expression, left interface{},
 	operator string, right interface{}) bool {
 	opExp, ok := exp.(*ast.InfixExpression)
@@ -128,9 +118,7 @@ func testInfixExpression(t *testing.T, exp ast.Expression, left interface{},
 	return true
 }
 
-// -----------------------
-// Boolean Literal Test
-// -----------------------
+// -------------------- Boolean Literal Test ----------------
 
 func testBooleanLiteral(t *testing.T, exp ast.Expression, value bool) bool {
 	bo, ok := exp.(*ast.Boolean)
@@ -150,9 +138,7 @@ func testBooleanLiteral(t *testing.T, exp ast.Expression, value bool) bool {
 	return true
 }
 
-// -----------------------
-// Function Parameter Test
-// -----------------------
+// -------------------- Function Parameter Test ------------------
 func TestFunctionParameterParsing(t *testing.T) {
 	tests := []struct {
 		input          string

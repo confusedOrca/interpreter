@@ -8,9 +8,7 @@ import (
 	"github.com/confusedOrca/interpreter/parser"
 )
 
-// --------------------------
-// Let Statements Test
-// --------------------------
+// -------------------- Let Statements Test --------------
 
 var letStmt_input = `
 	let x = 5;
@@ -74,9 +72,7 @@ func testLetStatement(t *testing.T, stmt ast.Statement, identName string) bool {
 	return true
 }
 
-// --------------------------
-// Return Statement Test
-// --------------------------
+// ---------------------- Return Statement Test ---------------
 
 var retStmt_input = `
 	return 5;
