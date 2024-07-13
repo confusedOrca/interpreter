@@ -5,8 +5,17 @@ import (
 	"testing"
 
 	"github.com/confusedOrca/interpreter/ast"
+	"github.com/confusedOrca/interpreter/lexer"
 	"github.com/confusedOrca/interpreter/parser"
 )
+
+func getParsedProgram(t *testing.T, input string) ast.Program {
+	lxr := lexer.New(input)
+	parser := parser.New(lxr)
+	program := parser.ParseProgram()
+	checkParserErrors(t, parser)
+	return *program
+}
 
 // --------------------------
 // Test Parsing Error
